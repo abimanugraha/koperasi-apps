@@ -68,22 +68,22 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-md-8 col-12">
+                                    <div class="form-group col-md-6 col-12">
                                         <label>Foto</label>
                                         <div class="custom-file">
                                             <input name="foto" type="file" class="custom-file-input" id="customFile">
                                             <label class="custom-file-label" for="customFile"><?= $user['foto']; ?></label>
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-4 col-12">
+                                    <div class="form-group col-md-6 col-12">
                                         <label class="form-label">Status</label>
                                         <div class="selectgroup w-100">
                                             <label class="selectgroup-item">
-                                                <input type="radio" name="status" value="1" class="selectgroup-input" placeholder="" <?= $user['email'] == 1 ? 'checked' : ''; ?>>
+                                                <input type="radio" name="status" value="1" class="selectgroup-input" placeholder="" <?= $user['status'] == 1 ? 'checked' : ''; ?>>
                                                 <span class="selectgroup-button">Aktif</span>
                                             </label>
                                             <label class="selectgroup-item">
-                                                <input type="radio" name="status" value="0" class="selectgroup-input" placeholder="" <?= $user['email'] == 0 ? 'checked' : ''; ?>>
+                                                <input type="radio" name="status" value="0" class="selectgroup-input" placeholder="" <?= $user['status'] == 0 ? 'checked' : ''; ?>>
                                                 <span class="selectgroup-button">Tidak Aktif</span>
                                             </label>
                                         </div>
