@@ -39,18 +39,36 @@ class Anggota extends CI_Controller
     {
         $data['usr'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
         $data['title'] = 'Manajemen Anggota';
-        $row = $this->User_model->get_by_id($id);
-        if ($row) {
-            $data['user'] = array(
-                'id' => $row->id,
-                'username' => $row->username,
-                'password' => $row->password,
-                'email' => $row->email,
-                'level' => $row->level,
-                'foto' => $row->foto,
-                'status' => $row->status,
-                'date_created' => $row->date_created,
+        $anggota = $this->Anggota_model->get_by_id($id);
+        if ($anggota) {
+            $data['anggota'] = array(
+                'id' => $anggota->id,
+                'user_id' => $anggota->user_id,
+                'nama' => $anggota->nama,
+                'nik' => $anggota->nik,
+                'tempat_lahir' => $anggota->tempat_lahir,
+                'tgl_lahir' => $anggota->tgl_lahir,
+                'jenis_kelamin' => $anggota->jenis_kelamin,
+                'pekerjaan' => $anggota->pekerjaan,
+                'alamat' => $anggota->alamat,
+                'no_hp' => str_replace(' ', '', $anggota->no_hp),
+                'status' => $anggota->status
             );
+            $row = $this->User_model->get_by_username($anggota->user_id);
+            if ($row) {
+                $data['user'] = array(
+                    'id' => $row->id,
+                    'username' => $row->username,
+                    'password' => $row->password,
+                    'email' => $row->email,
+                    'level' => $row->level,
+                    'foto' => $row->foto,
+                    'status' => $row->status,
+                    'date_created' => $row->date_created,
+                );
+            } else {
+                $data['user'] = 0;
+            }
             $this->load->view('templates/header', $data);
             $this->load->view('templates/topbar', $data);
             $this->load->view('templates/sidebar', $data);
@@ -145,28 +163,33 @@ class Anggota extends CI_Controller
 
     public function update($id)
     {
+        $this->_rules_update();
         $row = $this->Anggota_model->get_by_id($id);
-
         if ($row) {
-            $data = array(
-                'button' => 'Update',
-                'action' => site_url('anggota/update_action'),
-                'id' => set_value('id', $row->id),
-                'user_id' => set_value('user_id', $row->user_id),
-                'nama' => set_value('nama', $row->nama),
-                'nik' => set_value('nik', $row->nik),
-                'tempat_lahir' => set_value('tempat_lahir', $row->tempat_lahir),
-                'tgl_lahir' => set_value('tgl_lahir', $row->tgl_lahir),
-                'jenis_kelamin' => set_value('jenis_kelamin', $row->jenis_kelamin),
-                'pekerjaan' => set_value('pekerjaan', $row->pekerjaan),
-                'alamat' => set_value('alamat', $row->alamat),
-                'no_hp' => set_value('no_hp', $row->no_hp),
-                'status' => set_value('status', $row->status),
-            );
-            $this->load->view('anggota/anggota_form', $data);
+            if ($this->form_validation->run() == FALSE) {
+                $this->read($id);
+            } else {
+                $data = array(
+                    'id' => set_value('id', $row->id),
+                    'user_id' => set_value('user_id', $row->user_id),
+                    'nama' => set_value('nama', $row->nama),
+                    'nik' => set_value('nik', $row->nik),
+                    'tempat_lahir' => set_value('tempat_lahir', $row->tempat_lahir),
+                    'tgl_lahir' => set_value('tgl_lahir', $row->tgl_lahir),
+                    'jenis_kelamin' => set_value('jenis_kelamin', $row->jenis_kelamin),
+                    'pekerjaan' => set_value('pekerjaan', $row->pekerjaan),
+                    'alamat' => set_value('alamat', $row->alamat),
+                    'no_hp' => set_value('no_hp', $row->no_hp),
+                    'status' => set_value('status', $row->status),
+                );
+                // var_dump($data);
+                $this->Anggota_model->update($id, $data);
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil diubah.</div>');
+                redirect(base_url('anggota/read/') . $id);
+            }
         } else {
-            $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('anggota'));
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Data tidak ditemukan!</div>');
+            redirect(base_url('anggota/read/') . $id);
         }
     }
 
@@ -220,6 +243,20 @@ class Anggota extends CI_Controller
         $this->form_validation->set_rules('pekerjaan', 'pekerjaan', 'trim|required');
         $this->form_validation->set_rules('alamat', 'alamat', 'trim|required');
         $this->form_validation->set_rules('no_hp', 'no hp', 'trim|required|is_unique[anggota.no_hp]|min_length[10]|max_length[13]');
+        // $this->form_validation->set_rules('status', 'status', 'trim|required');
+        $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+    public function _rules_update()
+    {
+        $this->form_validation->set_rules('user_id', 'user id', 'trim|required');
+        $this->form_validation->set_rules('nama', 'nama', 'trim|required');
+        $this->form_validation->set_rules('nik', 'nik', 'trim|required|min_length[16]|max_length[16]');
+        $this->form_validation->set_rules('tempat_lahir', 'tempat lahir', 'trim|required');
+        $this->form_validation->set_rules('tgl_lahir', 'tgl lahir', 'trim|required');
+        $this->form_validation->set_rules('jenis_kelamin', 'jenis kelamin', 'trim|required');
+        $this->form_validation->set_rules('pekerjaan', 'pekerjaan', 'trim|required');
+        $this->form_validation->set_rules('alamat', 'alamat', 'trim|required');
+        $this->form_validation->set_rules('no_hp', 'no hp', 'trim|required|min_length[10]|max_length[13]');
         // $this->form_validation->set_rules('status', 'status', 'trim|required');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }

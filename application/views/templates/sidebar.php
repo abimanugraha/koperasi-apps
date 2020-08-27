@@ -8,15 +8,26 @@
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
-            <li class="<?php if ($this->uri->segment(1, 0) == 'dashboard') echo "active"; ?>"><a class="nav-link" href="<?= base_url('dashboard'); ?>"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
+            <li class="<?php if ($this->uri->segment(1, 0) == 'dashboard' || $this->uri->segment(1, 0) == 'dashboard.html') echo "active"; ?>"><a class="nav-link" href="<?= base_url('dashboard'); ?>"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
             <li class="menu-header">Layanan</li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown <?php
+                                            $segmen = $this->uri->segment(1, 0);
+                                            if ($segmen == 'simpanan') {
+                                                echo "active";
+                                            } elseif ($segmen == 'pinjaman') {
+                                                echo "active";
+                                            } elseif ($segmen == 'pembayaran') {
+                                                echo "active";
+                                            } elseif ($segmen == 'pengambilan') {
+                                                echo "active";
+                                            }
+                                            ?>">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-cash-register"></i> <span>Transaksi</span></a>
                 <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="">Simpanan</a></li>
-                    <li><a class="nav-link" href="">Pinjaman</a></li>
-                    <li><a class="nav-link" href="">Angsuran</a></li>
-                    <li><a class="nav-link" href="">Pengambilan</a></li>
+                    <li class="<?php if ($this->uri->segment(1, 0) == 'simpanan') echo "active"; ?>"><a class="nav-link" href="<?= base_url('simpanan'); ?>">Simpanan</a></li>
+                    <li class="<?php if ($this->uri->segment(1, 0) == 'pinjaman') echo "active"; ?>"><a class="nav-link" href="<?= base_url('pinjaman'); ?>">Pinjaman</a></li>
+                    <li class="<?php if ($this->uri->segment(1, 0) == 'pembayaran') echo "active"; ?>"><a class="nav-link" href="<?= base_url('pembayaran'); ?>">Angsuran</a></li>
+                    <li class="<?php if ($this->uri->segment(1, 0) == 'user') echo "active"; ?>"><a class="nav-link" href="<?= base_url('pengambilan'); ?>">Pengambilan</a></li>
                 </ul>
             </li>
             <li class="menu-header">Admin</li>
@@ -34,7 +45,7 @@
                 <ul class="dropdown-menu">
                     <li class="<?php if ($this->uri->segment(1, 0) == 'user') echo "active"; ?>"><a class="nav-link" href="<?= base_url('user'); ?>">User</a></li>
                     <li class="<?php if ($this->uri->segment(1, 0) == 'anggota') echo "active"; ?>"><a class="nav-link" href="<?= base_url('anggota'); ?>">Anggota</a></li>
-                    <li class="<?php if ($this->uri->segment(1, 0) == 'simpanan') echo "active"; ?>"><a class="nav-link" href="#">Jenis Simpanan</a></li>
+                    <li class="<?php if ($this->uri->segment(1, 0) == 'jenis') echo "active"; ?>"><a class="nav-link" href="<?= base_url('jenis'); ?>">Jenis Simpanan</a></li>
                 </ul>
             </li>
             <li class=""><a class="nav-link" href="#"><i class="fas fa-print"></i></i> <span>Report</span></a></li>

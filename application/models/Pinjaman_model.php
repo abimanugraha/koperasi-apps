@@ -15,13 +15,38 @@ class Pinjaman_model extends CI_Model
         parent::__construct();
     }
 
+    // Get data pinjaman
+    public function get_data_pinjaman()
+    {
+        $this->db->order_by($this->id, $this->order);
+        $temp = $this->db->get($this->table)->result_array();
+        $result = $temp;
+        $i = 0;
+        foreach ($temp as $t) {
+            $result[$i++]['id_anggota'] = $this->Anggota_model->get_by_id($t['id_anggota'])->nama;
+        }
+        return $result;
+    }
+
+    // Get data pinjaman by id
+    public function get_data_pinjaman_by_id($id)
+    {
+        $this->db->where($this->id, $id);
+        $temp = $this->db->get($this->table)->row();
+        $result = $temp;
+        $result->id_anggota = $this->Anggota_model->get_by_id($temp->id_anggota)->nama;
+        $result->id_user = $this->User_model->get_by_id($temp->id_user)->username;
+        return $result;
+    }
+
     // datatables
-    function json() {
+    function json()
+    {
         $this->datatables->select('id,id_anggota,tgl_pinjam,jumlah,durasi,bunga,status,id_user,waktu_insert');
         $this->datatables->from('pinjaman');
         //add this line for join
         //$this->datatables->join('table2', 'pinjaman.field = table2.field');
-        $this->datatables->add_column('action', anchor(site_url('pinjaman/read/$1'),'Read')." | ".anchor(site_url('pinjaman/update/$1'),'Update')." | ".anchor(site_url('pinjaman/delete/$1'),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id');
+        $this->datatables->add_column('action', anchor(site_url('pinjaman/read/$1'), 'Read') . " | " . anchor(site_url('pinjaman/update/$1'), 'Update') . " | " . anchor(site_url('pinjaman/delete/$1'), 'Delete', 'onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id');
         return $this->datatables->generate();
     }
 
@@ -38,35 +63,37 @@ class Pinjaman_model extends CI_Model
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    
+
     // get total rows
-    function total_rows($q = NULL) {
+    function total_rows($q = NULL)
+    {
         $this->db->like('id', $q);
-	$this->db->or_like('id_anggota', $q);
-	$this->db->or_like('tgl_pinjam', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->or_like('durasi', $q);
-	$this->db->or_like('bunga', $q);
-	$this->db->or_like('status', $q);
-	$this->db->or_like('id_user', $q);
-	$this->db->or_like('waktu_insert', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('id_anggota', $q);
+        $this->db->or_like('tgl_pinjam', $q);
+        $this->db->or_like('jumlah', $q);
+        $this->db->or_like('durasi', $q);
+        $this->db->or_like('bunga', $q);
+        $this->db->or_like('status', $q);
+        $this->db->or_like('id_user', $q);
+        $this->db->or_like('waktu_insert', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
     // get data with limit and search
-    function get_limit_data($limit, $start = 0, $q = NULL) {
+    function get_limit_data($limit, $start = 0, $q = NULL)
+    {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id', $q);
-	$this->db->or_like('id_anggota', $q);
-	$this->db->or_like('tgl_pinjam', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->or_like('durasi', $q);
-	$this->db->or_like('bunga', $q);
-	$this->db->or_like('status', $q);
-	$this->db->or_like('id_user', $q);
-	$this->db->or_like('waktu_insert', $q);
-	$this->db->limit($limit, $start);
+        $this->db->or_like('id_anggota', $q);
+        $this->db->or_like('tgl_pinjam', $q);
+        $this->db->or_like('jumlah', $q);
+        $this->db->or_like('durasi', $q);
+        $this->db->or_like('bunga', $q);
+        $this->db->or_like('status', $q);
+        $this->db->or_like('id_user', $q);
+        $this->db->or_like('waktu_insert', $q);
+        $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
@@ -89,7 +116,6 @@ class Pinjaman_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
     }
-
 }
 
 /* End of file Pinjaman_model.php */

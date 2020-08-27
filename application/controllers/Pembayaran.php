@@ -11,11 +11,20 @@ class Pembayaran extends CI_Controller
         $this->load->model('Pembayaran_model');
         $this->load->library('form_validation');
         $this->load->library('datatables');
+        $this->load->model('Pinjaman_model');
     }
 
     public function index()
     {
-        $this->load->view('pembayaran/pembayaran_list');
+        $data['usr'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
+        $data['pinjaman'] = $this->Pembayaran_model->get_all();
+        $data['title'] = 'Transaksi Angsuran';
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('pembayaran/index', $data);
+        $this->load->view('templates/footer');
     }
 
     public function json()
@@ -48,10 +57,11 @@ class Pembayaran extends CI_Controller
 
     public function create()
     {
-        $data = array(
-            'button' => 'Create',
-            'action' => site_url('pembayaran/create_action'),
-            'id' => set_value('id'),
+        $data['usr'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
+        $data['title'] = 'Transaksi Pinjaman';
+        $data['list_pinjaman'] = $this->db->get_where('pinjaman', ['durasi >' => '0'])->result();
+        // $data['list_pinjaman'] = $this->Pinjaman_model->get_all();
+        $data['input'] = array(
             'id_pinjaman' => set_value('id_pinjaman'),
             'angsuran' => set_value('angsuran'),
             'cicilan' => set_value('cicilan'),
@@ -59,9 +69,12 @@ class Pembayaran extends CI_Controller
             'tgl_bayar' => set_value('tgl_bayar'),
             'jumlah' => set_value('jumlah'),
             'id_user' => set_value('id_user'),
-            'waktu_insert' => set_value('waktu_insert'),
         );
-        $this->load->view('pembayaran/pembayaran_form', $data);
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('pembayaran/create', $data);
+        $this->load->view('templates/footer');
     }
 
     public function create_action()

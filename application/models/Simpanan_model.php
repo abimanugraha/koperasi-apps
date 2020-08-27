@@ -7,21 +7,50 @@ class Simpanan_model extends CI_Model
 {
 
     public $table = 'simpanan';
-    public $id = '';
+    public $id = 'id';
     public $order = 'DESC';
 
     function __construct()
     {
         parent::__construct();
+        $this->load->model('User_model');
+    }
+
+
+    // Get data simpanan
+    public function get_data_simpanan()
+    {
+        $this->db->order_by($this->id, $this->order);
+        $temp = $this->db->get($this->table)->result_array();
+        $result = $temp;
+        $i = 0;
+        foreach ($temp as $t) {
+            $result[$i]['id_anggota'] = $this->Anggota_model->get_by_id($t['id_anggota'])->nama;
+            $result[$i++]['id_jenis'] = $this->Jenis_model->get_by_id($t['id_jenis'])->jenis;
+        }
+        return $result;
+    }
+
+    // Get data simpanan by id
+    public function get_data_simpanan_by_id($id)
+    {
+        $this->db->where($this->id, $id);
+        $temp = $this->db->get($this->table)->row();
+        $result = $temp;
+        $result->id_anggota = $this->Anggota_model->get_by_id($temp->id_anggota)->nama;
+        $result->id_jenis = $this->Jenis_model->get_by_id($temp->id_jenis)->jenis;
+        $result->id_user = $this->User_model->get_by_id($temp->id_user)->username;
+        return $result;
     }
 
     // datatables
-    function json() {
+    function json()
+    {
         $this->datatables->select('id,id_anggota,id_jenis,tgl_simpan,jumlah,id_user,waktu_insert');
         $this->datatables->from('simpanan');
         //add this line for join
         //$this->datatables->join('table2', 'simpanan.field = table2.field');
-        $this->datatables->add_column('action', anchor(site_url('simpanan/read/$1'),'Read')." | ".anchor(site_url('simpanan/update/$1'),'Update')." | ".anchor(site_url('simpanan/delete/$1'),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), '');
+        $this->datatables->add_column('action', anchor(site_url('simpanan/read/$1'), 'Read') . " | " . anchor(site_url('simpanan/update/$1'), 'Update') . " | " . anchor(site_url('simpanan/delete/$1'), 'Delete', 'onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), '');
         return $this->datatables->generate();
     }
 
@@ -38,33 +67,35 @@ class Simpanan_model extends CI_Model
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    
+
     // get total rows
-    function total_rows($q = NULL) {
+    function total_rows($q = NULL)
+    {
         $this->db->like('', $q);
-	$this->db->or_like('id', $q);
-	$this->db->or_like('id_anggota', $q);
-	$this->db->or_like('id_jenis', $q);
-	$this->db->or_like('tgl_simpan', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->or_like('id_user', $q);
-	$this->db->or_like('waktu_insert', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('id', $q);
+        $this->db->or_like('id_anggota', $q);
+        $this->db->or_like('id_jenis', $q);
+        $this->db->or_like('tgl_simpan', $q);
+        $this->db->or_like('jumlah', $q);
+        $this->db->or_like('id_user', $q);
+        $this->db->or_like('waktu_insert', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
     // get data with limit and search
-    function get_limit_data($limit, $start = 0, $q = NULL) {
+    function get_limit_data($limit, $start = 0, $q = NULL)
+    {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('', $q);
-	$this->db->or_like('id', $q);
-	$this->db->or_like('id_anggota', $q);
-	$this->db->or_like('id_jenis', $q);
-	$this->db->or_like('tgl_simpan', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->or_like('id_user', $q);
-	$this->db->or_like('waktu_insert', $q);
-	$this->db->limit($limit, $start);
+        $this->db->or_like('id', $q);
+        $this->db->or_like('id_anggota', $q);
+        $this->db->or_like('id_jenis', $q);
+        $this->db->or_like('tgl_simpan', $q);
+        $this->db->or_like('jumlah', $q);
+        $this->db->or_like('id_user', $q);
+        $this->db->or_like('waktu_insert', $q);
+        $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
@@ -87,7 +118,6 @@ class Simpanan_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
     }
-
 }
 
 /* End of file Simpanan_model.php */

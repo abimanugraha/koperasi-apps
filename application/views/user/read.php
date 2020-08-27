@@ -98,11 +98,11 @@
                                         <label class="form-label">Status</label>
                                         <div class="selectgroup w-100">
                                             <label class="selectgroup-item">
-                                                <input type="radio" name="status" value="1" class="selectgroup-input" placeholder="" <?= $user['email'] == 1 ? 'checked' : ''; ?>>
+                                                <input type="radio" name="status" value="1" class="selectgroup-input" placeholder="" <?= $user['status'] == 1 ? 'checked' : ''; ?>>
                                                 <span class="selectgroup-button">Aktif</span>
                                             </label>
                                             <label class="selectgroup-item">
-                                                <input type="radio" name="status" value="0" class="selectgroup-input" placeholder="" <?= $user['email'] == 0 ? 'checked' : ''; ?>>
+                                                <input type="radio" name="status" value="0" class="selectgroup-input" placeholder="" <?= $user['status'] == 0 ? 'checked' : ''; ?>>
                                                 <span class="selectgroup-button">Tidak Aktif</span>
                                             </label>
                                         </div>

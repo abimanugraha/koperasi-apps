@@ -35,8 +35,6 @@ class User extends CI_Controller
 
     public function read($id)
     {
-        // echo $id;
-        // die;
         $data['usr'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
         $data['title'] = 'Manajemen User';
         $row = $this->User_model->get_by_id($id);
@@ -169,8 +167,6 @@ class User extends CI_Controller
 
         if ($row) {
             $data = array(
-                'button' => 'Update',
-                'action' => site_url('user/update_action'),
                 'id' => set_value('id', $row->id),
                 'username' => set_value('username', $row->username),
                 'password' => set_value('password', $row->password),
@@ -238,7 +234,6 @@ class User extends CI_Controller
                     'status' => $this->input->post('status', TRUE),
                 );
                 // var_dump($data);
-
                 $this->User_model->update($id, $data);
                 $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil diubah.</div>');
                 redirect(base_url('user/read/') . $id);

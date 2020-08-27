@@ -8,6 +8,7 @@ class User_model extends CI_Model
 
     public $table = 'user';
     public $id = 'id';
+    public $username = 'username';
     public $order = 'DESC';
 
     function __construct()
@@ -37,6 +38,13 @@ class User_model extends CI_Model
     function get_by_id($id)
     {
         $this->db->where($this->id, $id);
+        return $this->db->get($this->table)->row();
+    }
+
+    // get data by username
+    function get_by_username($user_id)
+    {
+        $this->db->where($this->username, $user_id);
         return $this->db->get($this->table)->row();
     }
 

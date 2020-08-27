@@ -16,12 +16,13 @@ class Pembayaran_model extends CI_Model
     }
 
     // datatables
-    function json() {
+    function json()
+    {
         $this->datatables->select('id,id_pinjaman,angsuran,cicilan,tgl_jatuh_tempo,tgl_bayar,jumlah,id_user,waktu_insert');
         $this->datatables->from('pembayaran');
         //add this line for join
         //$this->datatables->join('table2', 'pembayaran.field = table2.field');
-        $this->datatables->add_column('action', anchor(site_url('pembayaran/read/$1'),'Read')." | ".anchor(site_url('pembayaran/update/$1'),'Update')." | ".anchor(site_url('pembayaran/delete/$1'),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id');
+        $this->datatables->add_column('action', anchor(site_url('pembayaran/read/$1'), 'Read') . " | " . anchor(site_url('pembayaran/update/$1'), 'Update') . " | " . anchor(site_url('pembayaran/delete/$1'), 'Delete', 'onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id');
         return $this->datatables->generate();
     }
 
@@ -38,35 +39,37 @@ class Pembayaran_model extends CI_Model
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    
+
     // get total rows
-    function total_rows($q = NULL) {
+    function total_rows($q = NULL)
+    {
         $this->db->like('id', $q);
-	$this->db->or_like('id_pinjaman', $q);
-	$this->db->or_like('angsuran', $q);
-	$this->db->or_like('cicilan', $q);
-	$this->db->or_like('tgl_jatuh_tempo', $q);
-	$this->db->or_like('tgl_bayar', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->or_like('id_user', $q);
-	$this->db->or_like('waktu_insert', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('id_pinjaman', $q);
+        $this->db->or_like('angsuran', $q);
+        $this->db->or_like('cicilan', $q);
+        $this->db->or_like('tgl_jatuh_tempo', $q);
+        $this->db->or_like('tgl_bayar', $q);
+        $this->db->or_like('jumlah', $q);
+        $this->db->or_like('id_user', $q);
+        $this->db->or_like('waktu_insert', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
     // get data with limit and search
-    function get_limit_data($limit, $start = 0, $q = NULL) {
+    function get_limit_data($limit, $start = 0, $q = NULL)
+    {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id', $q);
-	$this->db->or_like('id_pinjaman', $q);
-	$this->db->or_like('angsuran', $q);
-	$this->db->or_like('cicilan', $q);
-	$this->db->or_like('tgl_jatuh_tempo', $q);
-	$this->db->or_like('tgl_bayar', $q);
-	$this->db->or_like('jumlah', $q);
-	$this->db->or_like('id_user', $q);
-	$this->db->or_like('waktu_insert', $q);
-	$this->db->limit($limit, $start);
+        $this->db->or_like('id_pinjaman', $q);
+        $this->db->or_like('angsuran', $q);
+        $this->db->or_like('cicilan', $q);
+        $this->db->or_like('tgl_jatuh_tempo', $q);
+        $this->db->or_like('tgl_bayar', $q);
+        $this->db->or_like('jumlah', $q);
+        $this->db->or_like('id_user', $q);
+        $this->db->or_like('waktu_insert', $q);
+        $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
@@ -89,7 +92,6 @@ class Pembayaran_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
     }
-
 }
 
 /* End of file Pembayaran_model.php */
